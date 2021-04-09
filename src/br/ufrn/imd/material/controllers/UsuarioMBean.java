@@ -2,21 +2,21 @@ package br.ufrn.imd.material.controllers;
 
 import java.io.Serializable;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.ufrn.imd.material.dominio.Usuario;
-import br.ufrn.imd.material.repositorios.UsuarioRepositorio;
+import br.ufrn.imd.material.negocio.UsuarioService;
 
 @Named("usuarioMBean")
 @SessionScoped
 public class UsuarioMBean implements Serializable {
 	
-	@Inject
-	private UsuarioRepositorio usuarioRepositorio;
+	@EJB
+	private UsuarioService usuarioService;
 	
 	private Usuario usuario;
 	
@@ -27,15 +27,15 @@ public class UsuarioMBean implements Serializable {
 	}
 
 	public String logar() {
-		Usuario usuarioBd = usuarioRepositorio.getUsuario(usuario.getLogin(), usuario.getSenha());
+		Usuario usuarioBd = usuarioService.getUsuario(usuario.getLogin(), usuario.getSenha());
 		if(usuarioBd != null) {
 			usuarioLogado = usuarioBd;
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogado", usuarioLogado);
 			return "/pages/index.jsf";
 		}
-		//não existe
+		//nï¿½o existe
 		else {
-			FacesMessage msg = new FacesMessage("Usuário não encontrado.");
+			FacesMessage msg = new FacesMessage("Usuï¿½rio nï¿½o encontrado.");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage("", msg);
 			return null;
